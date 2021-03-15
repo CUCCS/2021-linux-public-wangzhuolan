@@ -10,36 +10,36 @@
 ## 试验过程记录：
 ## 一、手动安装ubentu
 1. 在Ubuntu[官网](https://releases.ubuntu.com/focal/)上下载ubuntu-20.04.2-live-server-amd64.iso镜像。
-![下载好的镜像文件](/img/download_iso.png)
+![下载好的镜像文件](img/download_iso.png)
 2. 然后**对比官方文档的sha256文件**确认镜像无损毁。
    注：win10系统镜像哈希值验证：***Get-FileHash + 待检验文件绝对路径 + -Algorithm + HASH值类型 + |Format-List***
    校验发现hash值一样，说明镜像无损，可以放心使用。
-   ![官方文档的哈希值](/img/official_hash_value.png)
-   ![下载完成的镜像的哈希值](/img/verify_result.png)
+   ![官方文档的哈希值](img/official_hash_value.png)
+   ![下载完成的镜像的哈希值](img/verify_result.png)
 3. 新建虚拟机并且配置好双网卡
-   ![双网卡1](/img/dual_nic1.png)
-   ![双网卡2](/img/dual_nic2.png)
+   ![双网卡1](img/dual_nic1.png)
+   ![双网卡2](img/dual_nic2.png)
 4. 导入盘片手动安装虚拟机成功
-![安装成功](/img/install_success.png)
+![安装成功](img/install_success.png)
 5. 使用 `ip a` 查看当前网卡情况和ip地址
-   ![查看网卡情况以及ip地址](/img/ip_a_result.png)
+   ![查看网卡情况以及ip地址](img/ip_a_result.png)
    通过cmd窗口打开ssh客户端，在宿主机使用ssh服务连接到虚拟机
-   ![打开ssh客户端](/img/ssh_enter.png)
+   ![打开ssh客户端](img/ssh_enter.png)
 ## 二、使用手动安装 Ubuntu 后得到的一个初始「自动配置描述文件」并对照[Ubuntu 20.04 + Autoinstall + VirtualBox](https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c)中提供的示例配置文件酌情修改。
 1. `sudo cat /var/log/installer/autoinstall-user-data`
    可以查看到如下文件：
-   ![初始自动配置描述文件](/img/initial_file.png)
+   ![初始自动配置描述文件](img/initial_file.png)
    更改文件权限。
-   ![更改属署](/img/change_permissions.png)
+   ![更改属署](img/change_permissions.png)
    使用`scp`命令把文件拷贝到本地，**切换到宿主机的目标文件夹中**，然后在主机终端输入：
    `scp cuc@192.168.56.102:/var/log/installer/autoinstall-user-data ./`
    如下图拷贝成功：
-   ![拷贝成功](/img/initial_user-data.png)
+   ![拷贝成功](img/initial_user-data.png)
 2. 酌情修改
 + **将autoinstall-user-data与[对比文件](https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c)中的内容进行对比发现：**
    + `apt`、`identity`、`keyboard`在[对比文件](https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c)中不存在。
    + 对比文件有,而autoinstall-user-data没有
-  ![对比文件有而拷贝下来的文件没有](/img/contrast_file.png)
+  ![对比文件有而拷贝下来的文件没有](img/contrast_file.png)
    + 两个文件中的`network`形式不相同
    + 对比文件的`ssh`中`allow-pw:no`，而autoinstall-user-data中为`allow-pw: true`。
  + **再次和老师提供的[user-data](https://github.com/c4pr1c3/LinuxSysAdmin/blob/master/exp/chap0x01/cd-rom/nocloud/user-data)进行对比**
@@ -101,31 +101,31 @@ autoinstall:
    `genisoimage -output focal-init.iso -volid cidata -joliet -rock user-data meta-data`
 4. 移除虚拟机`「设置」-「存储」-「控制器：IDE」`
    在「控制器：SATA」下新建 2 个虚拟光盘，按顺序 先挂载「ubuntu-20.04.2-live-server-amd64.iso镜像文件」后挂载「focal-init.iso镜像文件」
-   ![新建两个虚拟光盘并按顺序挂载](/img/focal-auto.png)
+   ![新建两个虚拟光盘并按顺序挂载](img/focal-auto.png)
 5. 启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 `yes`并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了.
-   ![无人值守安装过程](/img/installation_procedure.png)
+   ![无人值守安装过程](img/installation_procedure.png)
 ***
 ## 四、Virtualbox安装完Ubuntu之后新添加的网卡如何实现系统开机自动启用和自动获取IP。
 ### 操作步骤：
 1. 在虚拟机关闭的状态下新添加一块网卡，并设置成host-only模式
 2. 通过命令`ifconfig -a`可以看到**所有的网卡**
-   ![所有网卡](/img/all_network_card.png)
+   ![所有网卡](img/all_network_card.png)
    通过命令`ifconfig`可以看到**工作的网卡**
-   ![工作网卡](/img/work_network_card.png)
+   ![工作网卡](img/work_network_card.png)
    **发现新添加的网卡没有自动启用也没有自动获取ip**
 3. 使用vim打开文件`sudo vim /etc/netplan/00-installer-config.yaml`
-   ![编辑前](/img/before_edit.png)
+   ![编辑前](img/before_edit.png)
    英文状态下按下`i`键进入“插入模式”，插入
    ```
    enp0s9:
      dhcp4:true
    ```
    如下图：
-   ![编辑后](/img/after_edit.png)
+   ![编辑后](img/after_edit.png)
    然后按`esc`键退出“插入模式”，回到“命令模式”，在“命令模式”下，输入英文状态的`:`进入“底行模式”，输入`wq`保存并退出。
 4. 最后执行`sudo netplan apply`生效。
 5. 重启以后发现新添加的网卡**能实现系统开机自动启用和自动获取IP**（enp0s9自动启用并且自动获取了ip：192.168.56.104）。
-   ![成功](/img/complete_success.png)
+   ![成功](img/complete_success.png)
 ***
 ## 五、使用sftp在虚拟机和宿主机之间传输文件。
 ### 操作步骤：
@@ -140,9 +140,9 @@ autoinstall:
 ## 遇到的问题以及解决办法：
 1. 使用`scp`命令进行文件传输时时出现问题。最开始没有切换到宿主机，再后来没有切换进目标文件，导致拷贝地址错误，出了几次错误才搞清楚具体怎么写。
    具体见下图：
-   ![error1](/img/error1.png)
-2. 由于同学们在语雀上的提问，有许多和我重复的问题，在[语雀课堂](https://www.yuque.com/c4pr1c3/linux)得到了解答
-
+   ![error1](img/error1.png)
+2. 看了同学们在语雀上的提问和老师的解答，有关于实验过程的问题有许多和我遇到的重复，在[语雀课堂](https://www.yuque.com/c4pr1c3/linux)得到了解答。
+3. 提交过程中出现了很多问题：（1）刚开始没有新建master直接提交到分支导致不成功（2）后来由于图片路径填写错误，多加了一个`/`，导致图片显示不出来，关掉了pr重新提交了一次。把分支克隆到本地的命令为`git clone -b 分支名 http://(git@github.comXXXX.git)`。
 ***
 ## 参考链接
 + [老师的课件](https://c4pr1c3.github.io/LinuxSysAdmin/chap0x01.exp.md.html#/-iso)
