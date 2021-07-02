@@ -48,7 +48,9 @@
   ```
 
 - 在主机访问80端口发现可以访问Nginx初始页面。
+  
   ![](img/install.jpg)
+
   ![](img/welcome.jpg)
 
 ---
@@ -208,6 +210,7 @@
   ```
 
   ![](img/edit_php.jpg)
+
   ![](img/edit_php3.jpg)
   
   然后用`sudo nginx -t`检查语法无误。
@@ -216,6 +219,7 @@
 
   重启一下nginx服务：`sudo systemctl reload nginx`
 - 浏览器输入IP加上/wp-admin/即可，登入后即可进入网站后台。
+  
   ![](img/success1.jpg)
 
   
@@ -381,6 +385,7 @@
 - [B站视频](https://b23.tv/EsqOrH)
 - [CSDN虚拟机UbuntuServer20.04配置LNMP并安装Wordpress个人博客](https://blog.csdn.net/NCEPUautomation/article/details/112221221)
 - [How To Install Linux, Nginx, MySQL, PHP (LEMP stack) on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-ubuntu-20-04)
+
 
 ## 实验过程遇到的问题和解决办法
 
